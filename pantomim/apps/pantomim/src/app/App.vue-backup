@@ -1,0 +1,163 @@
+<!-- <script setup lang="ts">
+import NxWelcome from './PantomimWelcome.vue';
+import MiddleContent from './MiddleContent.vue';
+import AuthPage from './AuthPage.vue';
+</script>
+
+<template>
+
+  <AuthPage></AuthPage>
+</template> -->
+
+
+<script setup>
+
+
+import { user } from "./lib/stores/user.js";
+
+import { onMounted, createApp } from 'vue';
+
+// import router from "./router/index.js";
+
+import { Button, NavBar } from 'vant';
+import 'vant/lib/index.css';
+
+
+
+import App from './App.vue';
+
+import { createRouter, createWebHistory } from 'vue-router';
+import Home from './pages/Home.vue';
+import Login from './pages/Login.vue';
+
+const routes = [
+    {
+        path: '/',
+        name: 'Home',
+        component: Home
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    }
+
+]
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes
+})
+
+
+router.beforeEach(async (to, from, next) => {
+  // assert(to.path !== null);   // "/some"
+
+  console.log(`router entering page: ${to.path}`);
+
+  // tbd. Describe exactly what the 'to.matched.some(record => record.meta.requiresAuth);' does.
+  //    Some samples also have simpler: ...(paste here when coming across it)...
+  //
+  // Based on -> https://router.vuejs.org/guide/advanced/meta.html
+  //
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+  if (requiresAuth && ! await currentFirebaseUserProm().then( user => user !== null )) {
+    // user is signed in (we ignored its value from the Promise)
+    console.log("Wanting to go to (but not signed in): ", to);  // DEBUG
+
+    if (to.path === '/') {
+      next('/signin')   // no need to clutter the URL
+    } else {
+      next(`/signin?final=${to.path}`);
+    }
+  } else {
+    next();   // just proceed
+  }
+});
+
+
+
+
+
+const app = createApp(App);
+
+
+app.use(Button);
+app.use(NavBar);
+
+
+app.use(router);
+app.mount('#app');
+// onMounted(() => {
+//   user.init();
+// });
+</script>
+
+
+<template>
+  <div id="nav">
+    <router-link to="/">Home</router-link> | <router-link to="/login">login</router-link> 
+    </div>
+    <router-view></router-view>
+</template>
+
+<!-- <template>
+  <NavBar 
+    v-if="!user.current"
+    title="pantomim"
+  >
+    <template #right>
+      <router-link to="/home">Home</router-link>
+    <Button v-if="!user.current" square size="small" to="login">Login</Button>
+      <Button v-if="user.current" square size="small" to="login">Logout</Button> 
+    </template>
+  </NavBar>
+  
+</template> -->
+
+<!-- <template>
+    <Button square type="primary" label="Click" size="small">buttons</Button>
+    <van-button type="primary">Primary</van-button>
+  <div class="wrapper">
+    <div class="container">
+    <nav>
+      <a href="/">Idea tracker</a>
+      <div id="welcome">
+        <template v-if="user.current">
+          <span>{{ user.current.email }}</span>
+          <Button type="button" id="logout-button" @click="user.logout()">Logout</Button>
+        </template>
+        <Button size="small" square v-else href="/login" class="Button">Login</Button>
+      </div>
+    </nav>
+    <main>
+      <Login v-if="isLoginPage" />
+      <Home v-else />
+    </main>
+  </div>
+</div>
+</template>
+
+<style>
+.wrapper {
+  width: 100%;
+}
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 768px;
+  padding-bottom: 3rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  color: rgba(55, 65, 81, 1);
+  width: 100%;
+}
+#welcome {
+  margin-top: 2.5rem;
+}
+
+#logout-button {
+  margin-left: 0.5rem;
+}
+</style> -->

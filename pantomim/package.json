@@ -5,7 +5,15 @@
   "scripts": {},
   "private": true,
   "dependencies": {
-    "vue": "^3.3.4"
+    "@progress/kendo-theme-default": "^7.0.2",
+    "@progress/kendo-vue-buttons": "^4.1.0",
+    "@progress/kendo-vue-inputs": "^4.1.0",
+    "@progress/kendo-vue-layout": "^4.1.0",
+    "appwrite": "^13.0.1",
+    "primevue": "^3.41.1",
+    "vant": "^4.8.0",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@nx/cypress": "17.1.3",
